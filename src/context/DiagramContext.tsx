@@ -149,6 +149,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 				svgContent,
 				diagramColor,
 				setDiagramColor,
+				diagramName,
 			}}>
 			{children}
 		</DiagramContext.Provider>

@@ -15,11 +15,7 @@ type Data = {
 }
 
 export const data: Data[] = [
-	{ id: 1, amount: 10, color: '#000000', title: '' },
-	{ id: 2, amount: 99, color: '#000000', title: '' },
-	{ id: 3, amount: 30, color: '#00ff00', title: '' },
-	{ id: 4, amount: 40, color: '#000000', title: '' },
-	{ id: 5, amount: 50, color: '#000000', title: '' },
+	{ id: 0, amount: 0, color: '#000000', title: '' },
 ];
 
 export const columns: ColumnDef<Data>[] = [

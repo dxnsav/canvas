@@ -32,9 +32,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-interface DataTableProps { }
 
-export function DataTable({ }: DataTableProps) {
+export function DataTable() {
 	const { data, addNewRow, removeSelectedRows } = useDataTableContext()
 
 	const [sorting, setSorting] = useState<SortingState>([])
