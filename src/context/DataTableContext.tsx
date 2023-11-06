@@ -24,7 +24,7 @@ export const DataTableProvider = ({ children }) => {
 	const addNewRow = () => {
 		setData((oldData) => [
 			...oldData,
-			{ id: oldData.length, name: '', amount: 0, color: '' },
+			{ id: oldData.length, title: '', amount: 0, color: '#000000' },
 		]);
 	};
 

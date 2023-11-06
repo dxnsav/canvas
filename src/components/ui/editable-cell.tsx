@@ -1,7 +1,7 @@
 import { Button } from "./button";
 import { Input } from "./input";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDataTableContext } from "@/context/DataTableContext";
 import { CheckIcon } from "@radix-ui/react-icons";
 
@@ -14,18 +14,18 @@ export const EditableCell = ({
 	const [editMode, setEditMode] = useState(false);
 	const [inputValue, setInputValue] = useState(initialValue);
 
-	const { updateData } = useDataTableContext();
+	const { updateData, data } = useDataTableContext();
 
 	const toggleEditingMode = () => {
 		setEditMode(!editMode);
 	};
 
 	const handleInputChange = (e) => {
-		setInputValue(parseInt(e.target.value, 10));
+		setInputValue(isNumber ? parseInt(e.target.value, 10) : e.target.value);
 	}
 
 	const handleInputSubmission = (e) => {
-		setInputValue(parseInt(e.target.value, 10));
+		setInputValue(isNumber ? parseInt(e.target.value, 10) : e.target.value);
 		updateData(index, id, inputValue);
 		toggleEditingMode();
 	}
@@ -34,15 +34,15 @@ export const EditableCell = ({
 		editMode ? (
 			<Input
 				value={inputValue}
-				onChange={handleInputChange}
-				onBlur={handleInputSubmission}
-				onSubmit={() => handleInputSubmission()}
+				onChange={(e) => handleInputChange(e)}
+				onBlur={(e) => handleInputSubmission(e)}
+				onSubmit={(e) => handleInputSubmission(e)}
 				autoFocus
 				className="w-fit h-5"
 				type={isNumber ? "number" : "text"}
 			/>
 		) : (
-			<div onClick={toggleEditingMode}>{initialValue}</div>
+			<div className="w-full h-5" onClick={toggleEditingMode}>{initialValue}</div>
 		)
 	);
 };

@@ -4,7 +4,7 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Picker } from '../ui/picker'
 import { Button } from '../ui/button'
-import { Cross1Icon, FontItalicIcon, FontRomanIcon, FontSizeIcon, FontStyleIcon, LightningBoltIcon, PlusIcon } from '@radix-ui/react-icons'
+import { Cross1Icon, FontItalicIcon, FontRomanIcon, FontSizeIcon, FontStyleIcon, HeightIcon, LightningBoltIcon, PlusIcon, WidthIcon } from '@radix-ui/react-icons'
 import { Checkbox } from '../ui/checkbox'
 import { Separator } from '../ui/separator'
 import { useDiagramContext } from '../../context/DiagramContext'
@@ -35,7 +35,10 @@ export const Details = (props: Props) => {
 		fetch(GOOGLE_FONTS_URL)
 			.then(response => response.json())
 			.then(data => {
-				setFonts(data.items);
+				const filteredFonts = data.items.filter(font =>
+					font.subsets.includes('latin') && font.subsets.includes('cyrillic')
+				);
+				setFonts(filteredFonts);
 			});
 	}, []);
 
@@ -77,13 +80,8 @@ export const Details = (props: Props) => {
 					<FontStyleIcon className="h-4 w-4" />
 					<Popover open={open} onOpenChange={setOpen}>
 						<PopoverTrigger asChild>
-							<Button variant="outline" id="fontSearch" className="w-[150px] justify-start">
-								{selectedFont ?
-									selectedFont :
-									<>
-										Виберіть шрифт
-									</>
-								}
+							<Button variant="outline" id="fontSearch" className="w-fit justify-start">
+								{selectedFont ? selectedFont : "Виберіть шрифт"}
 							</Button>
 						</PopoverTrigger>
 						<PopoverContent className="p-0" side="right" align="start">
@@ -120,8 +118,9 @@ export const Details = (props: Props) => {
 				<Separator className='my-2' />
 				<Label>Розмір діаграми</Label>
 				<div className="flex items-center space-x-2">
+					<HeightIcon className="h-4 w-4" />
 					<Input
-						className="w-32"
+						className="w-fit"
 						value={size.width}
 						onChange={(e) => setSize(prevSize => ({ ...prevSize, width: parseInt(e.target.value, 10) }))}
 						id="chartWidth"
@@ -131,10 +130,10 @@ export const Details = (props: Props) => {
 						max="4000"
 					/>
 
-					<Cross1Icon className="h-4 w-4" />
+					<WidthIcon className="h-4 w-4" />
 
 					<Input
-						className="w-32"
+						className="w-fit"
 						value={size.height}
 						onChange={(e) => setSize(prevSize => ({ ...prevSize, height: parseInt(e.target.value, 10) }))}
 						id="chartHeight"

@@ -15,11 +15,11 @@ type Data = {
 }
 
 export const data: Data[] = [
-	{ id: 1, amount: 10, color: '#000000', title: 'test' },
-	{ id: 2, amount: 99, color: '#000000' },
-	{ id: 3, amount: 30, color: '#00ff00' },
-	{ id: 4, amount: 40, color: '#000000' },
-	{ id: 5, amount: 50, color: '#000000' },
+	{ id: 1, amount: 10, color: '#000000', title: '' },
+	{ id: 2, amount: 99, color: '#000000', title: '' },
+	{ id: 3, amount: 30, color: '#00ff00', title: '' },
+	{ id: 4, amount: 40, color: '#000000', title: '' },
+	{ id: 5, amount: 50, color: '#000000', title: '' },
 ];
 
 export const columns: ColumnDef<Data>[] = [
@@ -91,16 +91,12 @@ export const columns: ColumnDef<Data>[] = [
 		id: 'title',
 		accessorKey: 'title',
 		header: () => <div className="text-left">Назва</div>,
-		cell: ({ cell, row }) => {
-			const val = cell.getValue();
-			return (
-				<EditableCell
-					value={cell.getValue()}
-					row={row.index}
-					column={cell.column.id}
-					isNumber={false}
-				/>
-			);
-		},
+		cell: ({ cell, row }) =>
+			<EditableCell
+				value={cell.getValue()}
+				row={row.index}
+				column={cell.column.id}
+				isNumber={false}
+			/>
 	}
 ];

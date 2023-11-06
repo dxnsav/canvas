@@ -44,9 +44,6 @@ export const DiagramProvider = ({ children }) => {
 			google: {
 				families: [fontFamily]
 			},
-			active: () => {
-				console.log(`Font ${fontFamily} is now active and ready to use.`);
-			},
 		});
 	};
 
@@ -78,26 +75,37 @@ export const DiagramProvider = ({ children }) => {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
-		const totalPoints = parseInt(segments, 10);
-		points.forEach((point, index) => {
-			let angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
-			const endX = centerX + (radius + 15) * Math.cos(angle);
-			const endY = centerY + (radius + 15) * Math.sin(angle);
+		let textPositions = [];
+		const textPadding = 10;
+		const labelRadiusOffset = 30;
 
+
+		const totalPoints = parseInt(segments, 10) || Math.max(...points);
+		points.forEach((point, index) => {
+			// Calculate the angle for each point
+			let angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
+
+			// Calculate the line end point
+			let lineEndX = centerX + radius * Math.cos(angle);
+			let lineEndY = centerY + radius * Math.sin(angle);
+
+			// Draw the line from circle to label
 			ctx.beginPath();
 			ctx.moveTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
-			ctx.lineTo(endX, endY);
+			ctx.lineTo(lineEndX, lineEndY);
 			ctx.stroke();
 
-			const textOffset = 20;
-			const textX = endX + textOffset * Math.cos(angle);
-			const textY = endY + textOffset * Math.sin(angle);
+			// Calculate label position
+			let labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
+			let labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
 
-			const adjustedTextX = Math.max(padding, Math.min(width - padding, textX));
-			const adjustedTextY = Math.max(padding, Math.min(height - padding, textY));
+			// Adjust label position to avoid overlap
+			let newPos = findNonOverlappingPosition(labelX, labelY, textPositions, ctx.measureText(point).width, fontSize, textPadding);
+			textPositions.push({ x: newPos.x, y: newPos.y, width: ctx.measureText(point).width, height: fontSize });
 
+			// Draw the label text
 			ctx.fillStyle = colors[index];
-			ctx.fillText(point, adjustedTextX, adjustedTextY);
+			ctx.fillText(point, newPos.x, newPos.y);
 		});
 
 		if (showName) {
@@ -120,6 +128,12 @@ export const DiagramProvider = ({ children }) => {
 			draw(context, segments, points, showName, showLen, diagramName);
 			setImageURL(canvas.toDataURL());
 		}
+
+		// scroll to canvas ref
+		const element = document.getElementById('canvas');
+		element?.scrollIntoView({ behavior: 'smooth' });
+
+
 	};
 
 
@@ -150,6 +164,25 @@ export const DiagramProvider = ({ children }) => {
 			{children}
 		</DiagramContext.Provider>
 	)
+}
+
+function checkCollision(x, y, textPositions) {
+	for (const pos of textPositions) {
+		if (Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2) <= pos.height) {
+			return true; // Collision detected
+		}
+	}
+	return false; // No collision
+}
+
+function findNonOverlappingPosition(x, y, textPositions, width, height, padding) {
+	let newX = x;
+	let newY = y;
+	while (checkCollision(newX, newY, textPositions, width, height, padding)) {
+		newX += padding; // Move the text position slightly to the right
+		newY += padding; // Move the text position slightly down
+	}
+	return { x: newX, y: newY };
 }
 
 export const useDiagramContext = () => useContext(DiagramContext);
