@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '../ui/card';
 import { DownloadIcon } from '@radix-ui/react-icons';
+import { saveSvgAsPng } from 'save-svg-as-png';
 import { useDiagramContext } from '../../context/DiagramContext';
 
 interface CircleCanvasProps {
@@ -10,7 +11,7 @@ interface CircleCanvasProps {
 
 //link.download = `diagram-${formatDiagramName(diagramName)}.svg`;
 const CircleCanvas: FC<CircleCanvasProps> = () => {
-	const { size, svgContent, diagramName } = useDiagramContext();
+	const { size, svgContent, diagramName, canvasRef } = useDiagramContext();
 	const svgRef = useRef(null);
 
 	function formatDiagramName(diagramName) {
@@ -72,19 +73,28 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 		}
 	};
 
+	const downloadJpg = () => {
+		saveSvgAsPng(document.getElementById("diagram"), "diagram.png");
+	}
+
 
 	return (
 		<div className='flex flex-col gap-4 items-center'>
 			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
 				<CardContent>
-					<svg ref={svgRef} width={size.width} height={size.height}>
+					<svg ref={svgRef} id='diagram' width={size.width} height={size.height}>
 						{svgContent}
 					</svg>
 
 				</CardContent>
 			</Card>
+			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
+				<CardContent>
+					<canvas ref={canvasRef} width={size.width} height={size.height} />
+				</CardContent>
+			</Card>
 			<div className='flex flex-row gap-4'>
-				<Button className='w-fit' onClick={() => downloadSvg()}>
+				<Button className='w-fit' onClick={() => downloadJpg()}>
 					Завантажити SVG
 					<DownloadIcon className="ml-2 h-4 w-4" />
 				</Button>

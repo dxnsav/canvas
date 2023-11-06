@@ -1,6 +1,7 @@
 import { useState, useContext, createContext, useRef, useEffect } from "react";
 import WebFont from "webfontloader";
 import { useDataTableContext } from "./DataTableContext";
+import opentype from "opentype.js";
 
 export const DiagramContext = createContext();
 
@@ -58,7 +59,70 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 
 	const canvasRef = useRef(null);
-	const [imageURL, setImageURL] = useState('');
+
+	const drawCanvas = () => {
+		const canvas = canvasRef.current;
+		const ctx = canvas.getContext('2d');
+		const padding = 50;
+		const centerX = size.width / 2;
+		const centerY = size.height / 2;
+		const radius = Math.min(centerX, centerY) - padding;
+
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.font = `${fontSize}px ${selectedFont}`;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+		ctx.strokeStyle = diagramColor;
+		ctx.lineWidth = 2;
+		ctx.stroke();
+
+		const totalPoints = parseInt(segments, 10) || Math.max(...points);
+		const textPositions = [];
+		const labelRadiusOffset = 30;
+
+		points.forEach((point, index) => {
+			const angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
+			const x = centerX + radius * Math.cos(angle);
+			const y = centerY + radius * Math.sin(angle);
+
+			const circleEdgeX = centerX + radius * Math.cos(angle);
+			const circleEdgeY = centerY + radius * Math.sin(angle);
+			const labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
+			const labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
+
+			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
+
+
+			ctx.beginPath();
+			ctx.moveTo(centerX, centerY);
+			ctx.lineTo(x, y);
+			ctx.strokeStyle = colors[index];
+			ctx.stroke();
+
+
+			const textX = centerX + (radius + 20) * Math.cos(angle);
+			const textY = centerY + (radius + 20) * Math.sin(angle);
+
+			const position = findNonOverlappingPosition(textX, textY, textPositions, fontSize * 2, fontSize);
+
+
+			ctx.fillStyle = colors[index];
+			ctx.fillText(point.toString(), position.x, position.y);
+
+
+			textPositions.push({
+				x: position.x,
+				y: position.y,
+				width: ctx.measureText(point.toString()).width,
+				height: fontSize,
+			});
+		});
+
+	}
 
 	const drawSVG = () => {
 		const padding = 50;
@@ -129,6 +193,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 	const handleDrawClick = () => {
 		drawSVG();
+		drawCanvas();
 	};
 
 	return (
@@ -143,7 +208,6 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 				handleShowNameChange,
 				handleDrawClick,
 				canvasRef,
-				imageURL,
 				selectedFont,
 				setSelectedFont,
 				showLen,
@@ -157,6 +221,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 				diagramColor,
 				setDiagramColor,
 				diagramName,
+				drawCanvas
 			}}>
 			{children}
 		</DiagramContext.Provider>
@@ -172,7 +237,7 @@ function checkCollision(x, y, textPositions) {
 	return false;
 }
 
-function findNonOverlappingPosition(x, y, textPositions, width, height, padding) {
+function findNonOverlappingPosition(x, y, textPositions, width, height, padding = 5) {
 	let newX = x;
 	let newY = y;
 	while (checkCollision(newX, newY, textPositions, width, height, padding)) {
@@ -181,5 +246,6 @@ function findNonOverlappingPosition(x, y, textPositions, width, height, padding)
 	}
 	return { x: newX, y: newY };
 }
+
 
 export const useDiagramContext = () => useContext(DiagramContext);

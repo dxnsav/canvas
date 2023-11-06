@@ -17,8 +17,6 @@ import {
 	CommandInput,
 	CommandItem,
 } from "@/components/ui/command";
-import { Menubar, MenubarMenu } from '../ui/menubar'
-import { Toggle } from '../ui/toggle'
 
 type Props = {}
 
@@ -41,11 +39,6 @@ export const Details = (props: Props) => {
 				setFonts(filteredFonts);
 			});
 	}, []);
-
-	function applyFont(fontFamily) {
-		setSelectedFont(fontFamily);
-		setOpen(false);
-	}
 
 	const filteredFonts = fontSearchQuery
 		? fonts.filter(font => font.family.toLowerCase().includes(fontSearchQuery.toLowerCase()))
