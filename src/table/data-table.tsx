@@ -1,5 +1,4 @@
 import {
-	ColumnDef,
 	flexRender,
 	useReactTable,
 	SortingState,
@@ -9,7 +8,7 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 } from "@tanstack/react-table"
-import { useState, useContext, useEffect } from "react"
+import { useState } from "react"
 import {
 	Table,
 	TableBody,
@@ -18,7 +17,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -28,14 +26,15 @@ import {
 import { Button } from "@/components/ui/button"
 import { MixerHorizontalIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 
-import { DataTableContext, useDataTableContext } from "@/context/DataTableContext"
+import { useDataTableContext } from "@/context/DataTableContext"
 import { columns } from './columns'
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-interface DataTableProps<TData, TValue> { }
+interface DataTableProps { }
 
-export function DataTable<TData, TValue>({ }: DataTableProps<TData, TValue>) {
+export function DataTable({ }: DataTableProps) {
 	const { data, addNewRow, removeSelectedRows } = useDataTableContext()
 
 	const [sorting, setSorting] = useState<SortingState>([])
@@ -115,46 +114,48 @@ export function DataTable<TData, TValue>({ }: DataTableProps<TData, TValue>) {
 				</div>
 				<div className="rounded-md border">
 					<Table>
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => {
-										return (
-											<TableHead key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(
-														header.column.columnDef.header,
-														header.getContext()
-													)}
-											</TableHead>
-										)
-									})}
-								</TableRow>
-							))}
-						</TableHeader>
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow
-										key={row.id}
-										data-state={row.getIsSelected() && "selected"}
-									>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										))}
+						<ScrollArea className="h-96 rounded-md border">
+							<TableHeader>
+								{table.getHeaderGroups().map((headerGroup) => (
+									<TableRow key={headerGroup.id}>
+										{headerGroup.headers.map((header) => {
+											return (
+												<TableHead key={header.id}>
+													{header.isPlaceholder
+														? null
+														: flexRender(
+															header.column.columnDef.header,
+															header.getContext()
+														)}
+												</TableHead>
+											)
+										})}
 									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={columns.length} className="h-24 text-center">
-										Немає даних
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
+								))}
+							</TableHeader>
+							<TableBody>
+								{table.getRowModel().rows?.length ? (
+									table.getRowModel().rows.map((row) => (
+										<TableRow
+											key={row.id}
+											data-state={row.getIsSelected() && "selected"}
+										>
+											{row.getVisibleCells().map((cell) => (
+												<TableCell key={cell.id}>
+													{flexRender(cell.column.columnDef.cell, cell.getContext())}
+												</TableCell>
+											))}
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell colSpan={columns.length} className="h-24 text-center">
+											Немає даних
+										</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</ScrollArea>
 					</Table>
 				</div>
 			</CardContent>

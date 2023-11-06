@@ -4,7 +4,11 @@ import { useDataTableContext } from "./DataTableContext";
 
 export const DiagramContext = createContext();
 
-export const DiagramProvider = ({ children }) => {
+interface DiagramProviderProps {
+	children: React.ReactNode;
+}
+
+export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) => {
 	const [diagramName, setDiagramName] = useState('');
 	const [segments, setSegments] = useState(0);
 	const [points, setPoints] = useState([]);
@@ -15,7 +19,8 @@ export const DiagramProvider = ({ children }) => {
 	const [fontSize, setFontSize] = useState(14);
 	const [colors, setColors] = useState([]);
 	const [size, setSize] = useState({ width: 500, height: 500 });
-
+	const [diagramColor, setDiagramColor] = useState('#000000');
+	const [svgContent, setSvgContent] = useState([]);
 	const { data } = useDataTableContext();
 
 	useEffect(() => {
@@ -51,91 +56,73 @@ export const DiagramProvider = ({ children }) => {
 		loadFont(selectedFont);
 	}, [selectedFont]);
 
-	// diagram gen
+
 	const canvasRef = useRef(null);
 	const [imageURL, setImageURL] = useState('');
 
-	const draw = (ctx, segments, points, showName, showLen, diagramName) => {
-		const { width, height } = ctx.canvas;
-
+	const drawSVG = () => {
 		const padding = 50;
-
-		const centerX = width / 2;
-		const centerY = height / 2;
+		const centerX = size.width / 2;
+		const centerY = size.height / 2;
 		const radius = Math.min(centerX, centerY) - padding;
 
-		ctx.clearRect(0, 0, width, height);
+		const newSvgContent = [];
 
-
-		ctx.beginPath();
-		ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-		ctx.stroke();
-
-		ctx.font = `${fontSize}px ${selectedFont}`;
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle';
-
-		let textPositions = [];
-		const textPadding = 10;
-		const labelRadiusOffset = 30;
-
+		newSvgContent.push(<circle key="mainCircle" cx={centerX} cy={centerY} r={radius} stroke={diagramColor} fill="none" />);
 
 		const totalPoints = parseInt(segments, 10) || Math.max(...points);
+		const textPositions = [];
+		const labelRadiusOffset = 30;
+
 		points.forEach((point, index) => {
-			// Calculate the angle for each point
-			let angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
+			const angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
+			const circleEdgeX = centerX + radius * Math.cos(angle);
+			const circleEdgeY = centerY + radius * Math.sin(angle);
+			const labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
+			const labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
 
-			// Calculate the line end point
-			let lineEndX = centerX + radius * Math.cos(angle);
-			let lineEndY = centerY + radius * Math.sin(angle);
 
-			// Draw the line from circle to label
-			ctx.beginPath();
-			ctx.moveTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
-			ctx.lineTo(lineEndX, lineEndY);
-			ctx.stroke();
+			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
+			textPositions.push({ x: newPos.x, y: newPos.y, width: fontSize * String(point).length, height: fontSize });
 
-			// Calculate label position
-			let labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
-			let labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
+			const lineMargin = fontSize * 0.75;
+			const lineEndX = newPos.x - lineMargin * Math.cos(angle);
+			const lineEndY = newPos.y - lineMargin * Math.sin(angle);
 
-			// Adjust label position to avoid overlap
-			let newPos = findNonOverlappingPosition(labelX, labelY, textPositions, ctx.measureText(point).width, fontSize, textPadding);
-			textPositions.push({ x: newPos.x, y: newPos.y, width: ctx.measureText(point).width, height: fontSize });
+			newSvgContent.push(
+				<line key={`line-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={lineEndX} y2={lineEndY} stroke={colors[index]} />
+			);
 
-			// Draw the label text
-			ctx.fillStyle = colors[index];
-			ctx.fillText(point, newPos.x, newPos.y);
+
+			newSvgContent.push(
+				<text key={`label-${index}`} x={newPos.x} y={newPos.y} fontSize={fontSize} fontFamily={selectedFont} fill={colors[index]} textAnchor="middle" dominantBaseline="central">
+					{point}
+				</text>
+			);
 		});
 
 		if (showName) {
-			ctx.fillText(diagramName, centerX, centerY);
+			newSvgContent.push(
+				<text key="diagramName" x={centerX} y={centerY - 20} fontSize={fontSize} fontFamily={selectedFont} fill="black" textAnchor="middle" dominantBaseline="central">
+					{diagramName}
+				</text>
+			);
 		}
 
 		if (showLen) {
-			const lengthYPosition = showName ? centerY + 20 : centerY;
-			ctx.fillText(`${segments} bp`, centerX, lengthYPosition);
+			newSvgContent.push(
+				<text key="segmentLength" x={centerX} y={showName ? centerY + 40 : centerY + 20} fontSize={fontSize} fontFamily={selectedFont} fill="black" textAnchor="middle" dominantBaseline="central">
+					{`${segments} bp`}
+				</text>
+			);
 		}
-		setGenerated(true);
 
+		setSvgContent(newSvgContent);
 	};
 
 	const handleDrawClick = () => {
-		setGenerated(true);
-		const canvas = canvasRef.current;
-		if (canvas) {
-			const context = canvas.getContext('2d');
-			draw(context, segments, points, showName, showLen, diagramName);
-			setImageURL(canvas.toDataURL());
-		}
-
-		// scroll to canvas ref
-		const element = document.getElementById('canvas');
-		element?.scrollIntoView({ behavior: 'smooth' });
-
-
+		drawSVG();
 	};
-
 
 	return (
 		<DiagramContext.Provider
@@ -150,7 +137,6 @@ export const DiagramProvider = ({ children }) => {
 				handleDrawClick,
 				canvasRef,
 				imageURL,
-				draw,
 				selectedFont,
 				setSelectedFont,
 				showLen,
@@ -160,6 +146,9 @@ export const DiagramProvider = ({ children }) => {
 				generated,
 				size,
 				setSize,
+				svgContent,
+				diagramColor,
+				setDiagramColor,
 			}}>
 			{children}
 		</DiagramContext.Provider>
@@ -169,18 +158,18 @@ export const DiagramProvider = ({ children }) => {
 function checkCollision(x, y, textPositions) {
 	for (const pos of textPositions) {
 		if (Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2) <= pos.height) {
-			return true; // Collision detected
+			return true;
 		}
 	}
-	return false; // No collision
+	return false;
 }
 
 function findNonOverlappingPosition(x, y, textPositions, width, height, padding) {
 	let newX = x;
 	let newY = y;
 	while (checkCollision(newX, newY, textPositions, width, height, padding)) {
-		newX += padding; // Move the text position slightly to the right
-		newY += padding; // Move the text position slightly down
+		newX += padding;
+		newY += padding;
 	}
 	return { x: newX, y: newY };
 }

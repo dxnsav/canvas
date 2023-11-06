@@ -1,20 +1,24 @@
-import { Button } from "./button";
 import { Input } from "./input";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDataTableContext } from "@/context/DataTableContext";
-import { CheckIcon } from "@radix-ui/react-icons";
 
-export const EditableCell = ({
+interface EditableCellProps {
+	value: unknown;
+	row: unknown;
+	column: unknown;
+	isNumber?: boolean;
+}
+
+export const EditableCell: React.FC<EditableCellProps> = ({
 	value: initialValue,
 	row: index,
 	column: id,
-	isNumber = true
+	isNumber = true,
 }) => {
 	const [editMode, setEditMode] = useState(false);
 	const [inputValue, setInputValue] = useState(initialValue);
 
-	const { updateData, data } = useDataTableContext();
+	const { updateData } = useDataTableContext();
 
 	const toggleEditingMode = () => {
 		setEditMode(!editMode);
@@ -38,11 +42,11 @@ export const EditableCell = ({
 				onBlur={(e) => handleInputSubmission(e)}
 				onSubmit={(e) => handleInputSubmission(e)}
 				autoFocus
-				className="w-fit h-5"
+				className="w-40 h-6"
 				type={isNumber ? "number" : "text"}
 			/>
 		) : (
-			<div className="w-full h-5" onClick={toggleEditingMode}>{initialValue}</div>
+			<div className="w-40 h-6 bg-secondary border rounded-md border-border pl-3" onClick={toggleEditingMode}>{initialValue}</div>
 		)
 	);
 };

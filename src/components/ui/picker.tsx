@@ -4,15 +4,35 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { ScrollArea } from "./scroll-area";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { useDataTableContext } from "@/context/DataTableContext";
+import { useDiagramContext } from "@/context/DiagramContext";
 
-export const Picker = ({ isTag = true, initialValue = "#000000", onColorChange }) => {
+interface PickerProps {
+	isTag?: boolean;
+	initialValue?: string;
+	onColorChange: (color: string) => void;
+	index?: number;
+	id?: string | number;
+}
+
+export const Picker: React.FC<PickerProps> = ({
+	isTag = true,
+	initialValue = "#000000",
+	onColorChange,
+	index,
+	id
+}) => {
 	const [color, setColor] = useState(initialValue);
+
+	const { updateData } = useDataTableContext();
+	const { setDiagramColor } = useDiagramContext();
 
 	const handleChange = (newColor) => {
 		setColor(newColor);
-		if (onColorChange) {
-			onColorChange(newColor);
+		if (isTag) {
+			updateData(index, id, newColor);
+		} else {
+			setDiagramColor(newColor);
 		}
 	};
 
@@ -29,11 +49,12 @@ export function GradientPicker({
 }: {
 	color: string
 	setColor: (color: string) => void
-	className?: string
+	className?: string,
+	isTag?: boolean
 }) {
 
 	function generateWebSafeColors() {
-		let colors = [];
+		const colors = [];
 		const hexValues = ['00', '33', '66', '99', 'CC', 'FF'];
 
 		for (let r = 0; r < hexValues.length; r++) {
@@ -129,7 +150,7 @@ const GradientButton = ({
 	color,
 	children,
 }: {
-	color: string
+	color?: string
 	children: React.ReactNode
 }) => {
 	return (

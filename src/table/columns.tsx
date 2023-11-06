@@ -73,17 +73,11 @@ export const columns: ColumnDef<Data>[] = [
 		header: () => <div className="text-left">Колір</div>,
 		cell: ({ cell, row, column }) => {
 			const val = cell.getValue();
-			const { updateData } = useDataTableContext();
 
 			const [cellColor, setCellColor] = React.useState(val);
-			const handleSetColor = (color: string) => {
-				setCellColor(color);
-				cell.setValue(color);
-				updateData(row.index, column.id, color);
-			};
 
 			return (
-				<Picker initialValue={cellColor} setColor={handleSetColor} />
+				<Picker initialValue={cellColor} index={row.index} id={cell.column.id} />
 			);
 		}
 	},
