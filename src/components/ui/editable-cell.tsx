@@ -46,7 +46,9 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 				type={isNumber ? "number" : "text"}
 			/>
 		) : (
-			<div className="w-40 h-6 bg-secondary border rounded-md border-border pl-3" onClick={toggleEditingMode}>{initialValue}</div>
+			<div tabIndex={0} className="w-40 h-6 bg-secondary border rounded-md border-border pl-3 focus:outline	focus:outline-primary focus:outline-2" onClick={toggleEditingMode} onFocus={() =>
+				toggleEditingMode()
+			} > {initialValue}</div >
 		)
 	);
 };

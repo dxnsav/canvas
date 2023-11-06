@@ -68,7 +68,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 		const newSvgContent = [];
 
-		newSvgContent.push(<circle key="mainCircle" cx={centerX} cy={centerY} r={radius} stroke={diagramColor} fill="none" />);
+		newSvgContent.push(<circle key="mainCircle" cx={centerX} cy={centerY} r={radius} stroke={diagramColor} fill="none" strokeWidth="2" />);
 
 		const totalPoints = parseInt(segments, 10) || Math.max(...points);
 		const textPositions = [];
@@ -85,13 +85,20 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
 			textPositions.push({ x: newPos.x, y: newPos.y, width: fontSize * String(point).length, height: fontSize });
 
-			const lineMargin = fontSize * 0.75;
+			const lineMargin = fontSize;
 			const lineEndX = newPos.x - lineMargin * Math.cos(angle);
 			const lineEndY = newPos.y - lineMargin * Math.sin(angle);
+			const rayEndX = circleEdgeX - 20 * Math.cos(angle);
+			const rayEndY = circleEdgeY - 20 * Math.sin(angle);
 
 			newSvgContent.push(
-				<line key={`line-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={lineEndX} y2={lineEndY} stroke={colors[index]} />
+				<line key={`line-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={lineEndX} y2={lineEndY} stroke={colors[index]} strokeWidth="2" />
 			);
+
+			newSvgContent.push(
+				<line key={`ray-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={rayEndX} y2={rayEndY} stroke={colors[index]} strokeWidth="2" />
+			);
+
 
 
 			newSvgContent.push(
@@ -103,7 +110,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 		if (showName) {
 			newSvgContent.push(
-				<text key="diagramName" x={centerX} y={centerY - 20} fontSize={fontSize} fontFamily={selectedFont} fill="black" textAnchor="middle" dominantBaseline="central">
+				<text key="diagramName" x={centerX} y={centerY - 20} fontSize={fontSize * 1.75} fontFamily={selectedFont} fill={diagramColor} textAnchor="middle" dominantBaseline="central">
 					{diagramName}
 				</text>
 			);
@@ -111,7 +118,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 		if (showLen) {
 			newSvgContent.push(
-				<text key="segmentLength" x={centerX} y={showName ? centerY + 40 : centerY + 20} fontSize={fontSize} fontFamily={selectedFont} fill="black" textAnchor="middle" dominantBaseline="central">
+				<text key="segmentLength" x={centerX} y={showName ? centerY + 40 : centerY + 20} fontSize={fontSize * 1.75} fontFamily={selectedFont} fill={diagramColor} textAnchor="middle" dominantBaseline="central">
 					{`${segments} bp`}
 				</text>
 			);
