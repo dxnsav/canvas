@@ -34,6 +34,30 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 		toggleEditingMode();
 	}
 
+	const handleKeyDown = (e, rowIndex, colIndex) => {
+
+		const focusCell = (rowChange) => {
+			const targetRow = rowIndex + rowChange;
+			const targetCell = document.querySelector(`[tabindex][data-rowindex="${targetRow}"][data-colindex="${colIndex}"]`);
+			if (targetCell) {
+				targetCell.focus();
+			}
+		};
+
+		if (e.key === 'Enter') {
+			if (e.shiftKey) {
+				e.preventDefault();
+				if (e.altKey) {
+					focusCell(-1);
+				} else {
+					focusCell(1);
+				}
+			} else {
+				handleInputSubmission(e);
+			}
+		}
+	};
+
 	return (
 		editMode ? (
 			<Input
@@ -41,14 +65,16 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 				onChange={(e) => handleInputChange(e)}
 				onBlur={(e) => handleInputSubmission(e)}
 				onSubmit={(e) => handleInputSubmission(e)}
+				onKeyDown={(e) => handleKeyDown(e, index, id)}
 				autoFocus
 				className="w-40 h-6"
 				type={isNumber ? "number" : "text"}
 			/>
 		) : (
-			<div tabIndex={0} className="w-40 h-6 bg-secondary border rounded-md border-border pl-3 focus:outline	focus:outline-primary focus:outline-2" onClick={toggleEditingMode} onFocus={() =>
-				toggleEditingMode()
-			} > {initialValue}</div >
+			<div data-rowindex={index}
+				data-colindex={id} tabIndex={0} className="editable-cell w-40 h-6 bg-secondary border rounded-md border-border pl-3 focus:outline	focus:outline-primary focus:outline-2" onClick={toggleEditingMode} onFocus={() =>
+					toggleEditingMode()
+				} onKeyDown={(e) => handleKeyDown(e, index, id)} > {initialValue}</div >
 		)
 	);
 };

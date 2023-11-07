@@ -86,66 +86,13 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 
 		points.forEach((point, index) => {
 			const angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
-			const x = centerX + radius * Math.cos(angle);
-			const y = centerY + radius * Math.sin(angle);
-
 			const circleEdgeX = centerX + radius * Math.cos(angle);
 			const circleEdgeY = centerY + radius * Math.sin(angle);
 			const labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
 			const labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
 
-			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
-
-
-			ctx.beginPath();
-			ctx.moveTo(centerX, centerY);
-			ctx.lineTo(x, y);
-			ctx.strokeStyle = colors[index];
-			ctx.stroke();
-
-
-			const textX = centerX + (radius + 20) * Math.cos(angle);
-			const textY = centerY + (radius + 20) * Math.sin(angle);
-
-			const position = findNonOverlappingPosition(textX, textY, textPositions, fontSize * 2, fontSize);
-
-
-			ctx.fillStyle = colors[index];
-			ctx.fillText(point.toString(), position.x, position.y);
-
-
-			textPositions.push({
-				x: position.x,
-				y: position.y,
-				width: ctx.measureText(point.toString()).width,
-				height: fontSize,
-			});
-		});
-
-	}
-
-	const drawSVG = () => {
-		const padding = 50;
-		const centerX = size.width / 2;
-		const centerY = size.height / 2;
-		const radius = Math.min(centerX, centerY) - padding;
-
-		const newSvgContent = [];
-
-		newSvgContent.push(<circle key="mainCircle" cx={centerX} cy={centerY} r={radius} stroke={diagramColor} fill="none" strokeWidth="2" />);
-
-		const totalPoints = parseInt(segments, 10) || Math.max(...points);
-		const textPositions = [];
-		const labelRadiusOffset = 30;
-
-		points.forEach((point, index) => {
-			const angle = ((point / totalPoints) * (Math.PI * 2)) - Math.PI / 2;
-			const circleEdgeX = centerX + radius * Math.cos(angle);
-			const circleEdgeY = centerY + radius * Math.sin(angle);
-			const labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
-			const labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
-
-
+			// Assuming findNonOverlappingPosition is a function you've defined
+			// to calculate the position of text such that it doesn't overlap with others.
 			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
 			textPositions.push({ x: newPos.x, y: newPos.y, width: fontSize * String(point).length, height: fontSize });
 
@@ -155,44 +102,44 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 			const rayEndX = circleEdgeX - 20 * Math.cos(angle);
 			const rayEndY = circleEdgeY - 20 * Math.sin(angle);
 
-			newSvgContent.push(
-				<line key={`line-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={lineEndX} y2={lineEndY} stroke={colors[index]} strokeWidth="2" />
-			);
+			// Draw line from circle edge to the text position
+			ctx.beginPath();
+			ctx.moveTo(circleEdgeX, circleEdgeY);
+			ctx.lineTo(lineEndX, lineEndY);
+			ctx.strokeStyle = colors[index];
+			ctx.lineWidth = 2;
+			ctx.stroke();
 
-			newSvgContent.push(
-				<line key={`ray-${index}`} x1={circleEdgeX} y1={circleEdgeY} x2={rayEndX} y2={rayEndY} stroke={colors[index]} strokeWidth="2" />
-			);
+			// Draw line representing the "ray" from the circle edge
+			ctx.beginPath();
+			ctx.moveTo(circleEdgeX, circleEdgeY);
+			ctx.lineTo(rayEndX, rayEndY);
+			ctx.stroke();
 
-
-
-			newSvgContent.push(
-				<text key={`label-${index}`} x={newPos.x} y={newPos.y} fontSize={fontSize} fontFamily={selectedFont} fill={colors[index]} textAnchor="middle" dominantBaseline="central">
-					{point}
-				</text>
-			);
+			// Draw the text label
+			ctx.font = `${fontSize}px ${selectedFont}`;
+			ctx.fillStyle = colors[index];
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(point.toString(), newPos.x, newPos.y);
 		});
 
+		ctx.font = `${fontSize * 1.75}px ${selectedFont}`;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillStyle = diagramColor;
+
 		if (showName) {
-			newSvgContent.push(
-				<text key="diagramName" x={centerX} y={centerY - 20} fontSize={fontSize * 1.75} fontFamily={selectedFont} fill={diagramColor} textAnchor="middle" dominantBaseline="central">
-					{diagramName}
-				</text>
-			);
+			ctx.fillText(diagramName, centerX, centerY - 20);
 		}
 
 		if (showLen) {
-			newSvgContent.push(
-				<text key="segmentLength" x={centerX} y={showName ? centerY + 40 : centerY + 20} fontSize={fontSize * 1.75} fontFamily={selectedFont} fill={diagramColor} textAnchor="middle" dominantBaseline="central">
-					{`${segments} bp`}
-				</text>
-			);
+			const yOffset = showName ? centerY + 40 : centerY + 20;
+			ctx.fillText(`${segments} bp`, centerX, yOffset);
 		}
-
-		setSvgContent(newSvgContent);
-	};
+	}
 
 	const handleDrawClick = () => {
-		drawSVG();
 		drawCanvas();
 	};
 
@@ -217,7 +164,6 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 				generated,
 				size,
 				setSize,
-				svgContent,
 				diagramColor,
 				setDiagramColor,
 				diagramName,

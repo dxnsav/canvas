@@ -8,7 +8,7 @@ import {
 	getCoreRowModel,
 	getFilteredRowModel,
 } from "@tanstack/react-table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
 	Table,
 	TableBody,
@@ -43,6 +43,24 @@ export function DataTable() {
 	})
 	const [rowSelection, setRowSelection] = useState({})
 
+	useEffect(() => {
+		const handleKeyDown = (event) => {
+			if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+				event.preventDefault();
+				addNewRow();
+			} else if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+				event.preventDefault();
+				removeSelectedRows();
+			}
+		};
+
+		document.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [addNewRow, removeSelectedRows]);
+
 	const table = useReactTable({
 		data,
 		columns,
@@ -62,7 +80,7 @@ export function DataTable() {
 	})
 
 	return (
-		<Card className="w-[1100px] bg-muted">
+		<Card className="w-full">
 			<CardHeader>
 				<CardTitle>Введіть точки розрізу</CardTitle>
 			</CardHeader>
