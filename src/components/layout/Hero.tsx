@@ -1,5 +1,4 @@
 import { KeyboardIcon } from '@radix-ui/react-icons'
-import { Button } from '../ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Separator } from '../ui/separator'
 
@@ -16,7 +15,7 @@ const Hero = (props: Props) => {
 					Створення точних гістограм, кругових та лінійних діаграм у Photoshop може бути складним та часозатратним завданням. Наш генератор графіків розроблений з метою полегшити та прискорити цей процес, особливо коли йдеться про візуалізацію розрізів ДНК. Він ідеально підходить для генетиків, біологів та науковців, які потребують чіткого представлення даних для аналізу, навчання чи презентацій. Просто введіть ваші дані, і дивіться, як ваші графіки оживають в лічені секунди
 				</p>
 			</div>
-			<Card>
+			<Card className='w-[440px]'>
 				<CardHeader>
 					<CardTitle className='flex flex-row gap-2 align-middle'>
 						<KeyboardIcon className='w-5 h-5 mr-2' />
@@ -24,7 +23,7 @@ const Hero = (props: Props) => {
 					</CardTitle>
 					<Separator className='mt-2' />
 				</CardHeader>
-				<CardContent className='w-96 flex flex-col gap-2'>
+				<CardContent className='w-full flex flex-col gap-2'>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
 						<CardDescription>
 							Зберегти графік
@@ -78,7 +77,7 @@ const Hero = (props: Props) => {
 							Перейти на попередню колонку
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-							<span className="text-xs">Alt Tab</span>
+							<span className="text-xs">Alt  + Tab</span>
 						</kbd>
 					</div>
 				</CardContent>

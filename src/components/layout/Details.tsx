@@ -4,7 +4,7 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Picker } from '../ui/picker'
 import { Button } from '../ui/button'
-import { Cross1Icon, FontItalicIcon, FontRomanIcon, FontSizeIcon, FontStyleIcon, HeightIcon, LightningBoltIcon, PlusIcon, WidthIcon } from '@radix-ui/react-icons'
+import { FontSizeIcon, FontStyleIcon, HeightIcon, LightningBoltIcon, WidthIcon } from '@radix-ui/react-icons'
 import { Checkbox } from '../ui/checkbox'
 import { Separator } from '../ui/separator'
 import { useDiagramContext } from '../../context/DiagramContext'
@@ -17,6 +17,7 @@ import {
 	CommandInput,
 	CommandItem,
 } from "@/components/ui/command";
+import { BgPicker } from '../ui/bg-picker'
 
 type Props = {}
 
@@ -45,7 +46,7 @@ export const Details = (props: Props) => {
 		: fonts;
 
 	return (
-		<Card className='w-[400px]'>
+		<Card>
 			<CardHeader>
 				<CardTitle>Дані діаграми</CardTitle>
 			</CardHeader>
@@ -55,8 +56,12 @@ export const Details = (props: Props) => {
 				<Label htmlFor='chartName'>Назва графіку</Label>
 				<Input id="chartName" type='text' onChange={(e) => handleDiagramNameChange(e)} placeholder="Назва" />
 				<div className='flex flex-col gap-2'>
-					<Label>Виберіть колір</Label>
+					<Label>Виберіть кольор ліній</Label>
 					<Picker isTag={false} />
+				</div>
+				<div className='flex flex-col gap-2'>
+					<Label>Виберіть фон</Label>
+					<BgPicker />
 				</div>
 				<Separator className='my-2' />
 				<div className="flex items-center space-x-2">

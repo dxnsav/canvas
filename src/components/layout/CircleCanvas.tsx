@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../ui/card';
 import { DownloadIcon } from '@radix-ui/react-icons';
 import { useDiagramContext } from '../../context/DiagramContext';
 
@@ -41,19 +41,39 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 	}, [downloadPng]);
 
 	return (
-		<div className='flex flex-col gap-4 items-center'>
-			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
-				<CardContent>
-					<canvas ref={canvasRef} width={size.width} height={size.height} />
+		<div className='flex flex-row gap-4 items-center h-fit px-2'>
+			<Card className={`w-[314px] min-h-[200px]`}>
+				<CardContent className='flex flex-col justify-between' style={{ height: size.height }}>
+					<CardHeader>
+						<CardTitle>
+							Дякую за використання!
+						</CardTitle>
+						<CardDescription>
+
+							<div className='my-10'>
+								Зоставити фідбек можна надіславши лист на пошту <a
+									href=""
+									className="font-medium text-primary underline underline-offset-4"
+								>
+									contact@dxnsav.dev
+								</a>
+							</div>
+						</CardDescription>
+					</CardHeader>
+					<CardFooter>
+						<Button className='w-full' onClick={() => downloadPng()}>
+							Завантажити
+							<DownloadIcon className="ml-2 h-4 w-4" />
+						</Button>
+					</CardFooter>
 				</CardContent>
 			</Card>
-			<div className='flex flex-row gap-4'>
-				<Button className='w-fit' onClick={() => downloadPng()}>
-					Завантажити
-					<DownloadIcon className="ml-2 h-4 w-4" />
-				</Button>
-			</div>
-		</div>
+			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
+				<CardContent className='p-0'>
+					<canvas ref={canvasRef} width={size.width} height={size.height} className='rounded-xl' />
+				</CardContent>
+			</Card>
+		</div >
 	);
 };
 

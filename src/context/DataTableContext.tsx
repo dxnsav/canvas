@@ -1,5 +1,4 @@
 import { useState, useContext, createContext } from "react";
-import { DataTable } from '../table/data-table';
 import { data as initialData } from "@/table/columns";
 
 export const DataTableContext = createContext();

@@ -1,7 +1,6 @@
 import { useState, useContext, createContext, useRef, useEffect } from "react";
 import WebFont from "webfontloader";
 import { useDataTableContext } from "./DataTableContext";
-import opentype from "opentype.js";
 
 export const DiagramContext = createContext();
 
@@ -15,19 +14,14 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 	const [points, setPoints] = useState([]);
 	const [showLen, setShowLen] = useState(true);
 	const [showName, setShowName] = useState(true);
-	const [generated, setGenerated] = useState(false);
 	const [selectedFont, setSelectedFont] = useState("Roboto");
 	const [fontSize, setFontSize] = useState(14);
 	const [colors, setColors] = useState([]);
 	const [size, setSize] = useState({ width: 500, height: 500 });
 	const [diagramColor, setDiagramColor] = useState('#000000');
-	const [svgContent, setSvgContent] = useState([]);
 	const { data } = useDataTableContext();
 
-	useEffect(() => {
-		setPoints(data.map((row) => row.amount));
-		setColors(data.map((row) => row.color));
-	}, [data]);
+	const [diagramBgColor, setDiagramBgColor] = useState('transparent');
 
 	const handleShowLenChange = (event) => {
 		setShowLen(event);
@@ -57,6 +51,11 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 		loadFont(selectedFont);
 	}, [selectedFont]);
 
+	useEffect(() => {
+		setPoints(data.map((row) => row.amount));
+		setColors(data.map((row) => row.color));
+	}, [data]);
+
 
 	const canvasRef = useRef(null);
 
@@ -69,6 +68,9 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 		const radius = Math.min(centerX, centerY) - padding;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		diagramBgColor !== 'transprent' && parseBackground(ctx, diagramBgColor, canvas.width, canvas.height);
+
 
 		ctx.font = `${fontSize}px ${selectedFont}`;
 		ctx.textAlign = 'center';
@@ -91,8 +93,8 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 			const labelX = centerX + (radius + labelRadiusOffset) * Math.cos(angle);
 			const labelY = centerY + (radius + labelRadiusOffset) * Math.sin(angle);
 
-			// Assuming findNonOverlappingPosition is a function you've defined
-			// to calculate the position of text such that it doesn't overlap with others.
+
+
 			const newPos = findNonOverlappingPosition(labelX, labelY, textPositions, fontSize * String(point).length, fontSize, 10);
 			textPositions.push({ x: newPos.x, y: newPos.y, width: fontSize * String(point).length, height: fontSize });
 
@@ -102,7 +104,7 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 			const rayEndX = circleEdgeX - 20 * Math.cos(angle);
 			const rayEndY = circleEdgeY - 20 * Math.sin(angle);
 
-			// Draw line from circle edge to the text position
+
 			ctx.beginPath();
 			ctx.moveTo(circleEdgeX, circleEdgeY);
 			ctx.lineTo(lineEndX, lineEndY);
@@ -110,13 +112,13 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 			ctx.lineWidth = 2;
 			ctx.stroke();
 
-			// Draw line representing the "ray" from the circle edge
+
 			ctx.beginPath();
 			ctx.moveTo(circleEdgeX, circleEdgeY);
 			ctx.lineTo(rayEndX, rayEndY);
 			ctx.stroke();
 
-			// Draw the text label
+
 			ctx.font = `${fontSize}px ${selectedFont}`;
 			ctx.fillStyle = colors[index];
 			ctx.textAlign = "center";
@@ -161,13 +163,13 @@ export const DiagramProvider: React.FC<DiagramProviderProps> = ({ children }) =>
 				showName,
 				fontSize,
 				setFontSize,
-				generated,
 				size,
 				setSize,
 				diagramColor,
 				setDiagramColor,
 				diagramName,
-				drawCanvas
+				drawCanvas,
+				setDiagramBgColor
 			}}>
 			{children}
 		</DiagramContext.Provider>
@@ -191,6 +193,33 @@ function findNonOverlappingPosition(x, y, textPositions, width, height, padding 
 		newY += padding;
 	}
 	return { x: newX, y: newY };
+}
+
+const parseBackground = (ctx, colorOrGradient, width, height) => {
+	if (colorOrGradient.startsWith('linear-gradient')) {
+		const directionMatch = colorOrGradient.match(/to (top|bottom|left|right)( (top|bottom|left|right))?/);
+		let x0, y0, x1, y1;
+		if (directionMatch) {
+			const direction = directionMatch[0];
+			[x0, y0, x1, y1] = direction === 'to top' ? [0, height, 0, 0] :
+				direction === 'to bottom' ? [0, 0, 0, height] :
+					direction === 'to left' ? [width, 0, 0, 0] :
+						direction === 'to right' ? [0, 0, width, 0] :
+							[0, 0, width, height];
+		}
+		const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+		const colorStops = colorOrGradient.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}|rgba?\(([^)]+)\)/g);
+		if (colorStops) {
+			const step = 1 / (colorStops.length - 1);
+			colorStops.forEach((color, index) => {
+				gradient.addColorStop(step * index, color);
+			});
+		}
+		ctx.fillStyle = gradient;
+	} else {
+		ctx.fillStyle = colorOrGradient;
+	}
+	ctx.fillRect(0, 0, width, height);
 }
 
 
