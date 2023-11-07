@@ -44,7 +44,7 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 	}, [downloadPng]);
 
 	return (
-		<div className='flex flex-row gap-4 items-center h-fit px-2'>
+		<div className='flex flex-row gap-4 items-center h-fit'>
 			<Card className={`w-[314px] min-h-[200px] flex flex-col justify-between`} style={{ height: size.height }}>
 				<CardHeader>
 					<CardTitle>

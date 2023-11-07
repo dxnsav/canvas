@@ -205,7 +205,11 @@ const parseBackground = (ctx, colorOrGradient, width, height) => {
 				direction === 'to bottom' ? [0, 0, 0, height] :
 					direction === 'to left' ? [width, 0, 0, 0] :
 						direction === 'to right' ? [0, 0, width, 0] :
-							[0, 0, width, height];
+							direction === 'to left top' ? [width, height, 0, 0] :
+								direction === 'to left bottom' ? [width, 0, 0, height] :
+									direction === 'to right top' ? [0, height, width, 0] :
+										direction === 'to right bottom' ? [0, 0, width, height] :
+											[0, 0, width, height]; // Default to bottom right if unrecognized
 		}
 		const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
 		const colorStops = colorOrGradient.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}|rgba?\(([^)]+)\)/g);
@@ -220,7 +224,8 @@ const parseBackground = (ctx, colorOrGradient, width, height) => {
 		ctx.fillStyle = colorOrGradient;
 	}
 	ctx.fillRect(0, 0, width, height);
-}
+};
+
 
 
 export const useDiagramContext = () => useContext(DiagramContext);

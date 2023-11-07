@@ -63,9 +63,9 @@ export function GradientPicker({
 
 	const Btn = () => (
 		<Button
-			variant={'outline'}
+			variant={'ghost'}
 			className={cn(
-				'w-[250px] h-6 align-center justify-start text-left font-normal border',
+				'w-[250px] h-7 align-center justify-start text-left font-normal',
 				className,
 			)}
 		>
@@ -163,7 +163,7 @@ const GradientButton = ({
 }) => {
 	return (
 		<div
-			className="p-0.5 rounded-md relative !bg-cover !bg-center transition-all w-fit h-9 align-center justify-start text-left font-normal border"
+			className="p-0.5 rounded-md relative !bg-cover !bg-center transition-all w-fit h-[10.5] align-baseline justify-start text-left font-normal border"
 			style={{ background }}
 		>
 			<div className="bg-popover/80 rounded-md p-1 text-xs text-center">

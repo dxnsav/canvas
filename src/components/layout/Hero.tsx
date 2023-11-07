@@ -4,7 +4,7 @@ import { Separator } from '../ui/separator'
 
 const Hero = () => {
 	return (
-		<section id='hero' className='px-6 pt-10 md:pt-16 mb-48 md:px-10 md:mb-60 flex flex-row gap-10'>
+		<section id='hero' className='pt-10 md:pt-16 mb-20 md:mb-20 flex flex-row gap-10 justify-between'>
 			<div className='w-fit'>
 				<h1 className='text-xl text-clr-black font-bold max-w-md md:text-3xl lg:text-4xl lg:max-w-3xl xl:max-w-4xl mb-5 md:mb-7 lg:mb-10'>
 					Що це таке?

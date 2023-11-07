@@ -10,18 +10,20 @@ import Hero from './components/layout/Hero';
 const App: React.FC = () => {
   return (
     <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-      <Hero />
-      <DataTableProvider>
-        <DiagramProvider>
-          <div className='flex flex-col gap-4'>
-            <div className='flex flex-row gap-4 px-2'>
-              <Details />
-              <DataTable />
+      <div className='max-w-[1920px] mx-auto px-4'>
+        <Hero />
+        <DataTableProvider>
+          <DiagramProvider>
+            <div className='flex flex-col gap-4'>
+              <div className='flex flex-row gap-4'>
+                <Details />
+                <DataTable />
+              </div>
+              <CircleCanvas />
             </div>
-            <CircleCanvas />
-          </div>
-        </DiagramProvider>
-      </DataTableProvider>
+          </DiagramProvider>
+        </DataTableProvider>
+      </div>
     </ThemeProvider>
   );
 }
