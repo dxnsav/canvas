@@ -42,32 +42,32 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 
 	return (
 		<div className='flex flex-row gap-4 items-center h-fit px-2'>
-			<Card className={`w-[314px] min-h-[200px]`}>
-				<CardContent className='flex flex-col justify-between' style={{ height: size.height }}>
-					<CardHeader>
-						<CardTitle>
-							Дякую за використання!
-						</CardTitle>
-						<CardDescription>
-
-							<div className='my-10'>
-								Зоставити фідбек можна надіславши лист на пошту <a
-									href=""
-									className="font-medium text-primary underline underline-offset-4"
-								>
-									contact@dxnsav.dev
-								</a>
-							</div>
-						</CardDescription>
-					</CardHeader>
-					<CardFooter>
-						<Button className='w-full' onClick={() => downloadPng()}>
-							Завантажити
-							<DownloadIcon className="ml-2 h-4 w-4" />
-						</Button>
-					</CardFooter>
+			<Card className={`w-[314px] min-h-[200px] flex flex-col justify-between`} style={{ height: size.height }}>
+				<CardHeader>
+					<CardTitle>
+						Дякую за використання!
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Button className='w-full' onClick={() => downloadPng()}>
+						Завантажити
+						<DownloadIcon className="ml-2 h-4 w-4" />
+					</Button>
 				</CardContent>
+				<CardFooter>
+					<CardDescription>
+						<div className='my-10'>
+							Зоставити фідбек можна надіславши лист на пошту <a
+								href=""
+								className="font-medium text-primary underline underline-offset-4"
+							>
+								contact@dxnsav.dev
+							</a>
+						</div>
+					</CardDescription>
+				</CardFooter>
 			</Card>
+
 			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
 				<CardContent className='p-0'>
 					<canvas ref={canvasRef} width={size.width} height={size.height} className='rounded-xl' />
