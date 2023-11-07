@@ -2,9 +2,7 @@ import { KeyboardIcon } from '@radix-ui/react-icons'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Separator } from '../ui/separator'
 
-type Props = {}
-
-const Hero = (props: Props) => {
+const Hero = () => {
 	return (
 		<section id='hero' className='px-6 pt-10 md:pt-16 mb-48 md:px-10 md:mb-60 flex flex-row gap-10'>
 			<div className='w-fit'>

@@ -1,8 +1,14 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "jsx": "react",
-    "module": "commonjs",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ], // Ensure all necessary libraries for React and ESNext features
+    "jsx": "react-jsx", // For the new JSX transform in React 17+
+    "module": "esnext", // For using modern module resolution
+    "moduleResolution": "node", // For Node.js module resolution
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -12,6 +18,20 @@
       "@/*": [
         "./src/*"
       ]
-    }
-  }
+    },
+    "allowJs": true, // If you have JavaScript files you want to include
+    "strictNullChecks": true, // If you want to enable strict null checks
+    "noEmit": true, // If you are using Babel for transpiling or only using tsc for type checking
+    "isolatedModules": true, // If you are transpiling files independently (e.g., with Babel)
+    "resolveJsonModule": true, // If you need to import .json files
+    "incremental": true // Enable incremental compilation
+  },
+  "include": [
+    "src/**/*" // Adjust this pattern to include all your project files that you want to be covered by TypeScript
+  ],
+  "exclude": [
+    "node_modules", // Standard exclude
+    "dist", // Exclude your build output directory
+    "**/*.spec.ts" // Exclude test files if you don't want them to be part of the compilation context
+  ]
 }

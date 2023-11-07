@@ -19,12 +19,11 @@ import {
 } from "@/components/ui/command";
 import { BgPicker } from '../ui/bg-picker'
 
-type Props = {}
 
 const GOOGLE_FONTS_URL = `https://www.googleapis.com/webfonts/v1/webfonts?key=${import.meta.env.VITE_GOOGLE_FONTS_API_KEY}`;
 
 
-export const Details = (props: Props) => {
+export const Details = () => {
 	const { handleSegmentsChange, handleDiagramNameChange, handleShowLenChange, handleShowNameChange, handleDrawClick, selectedFont, setSelectedFont, showLen, showName, fontSize, setFontSize, size, setSize } = useDiagramContext();
 	const [open, setOpen] = React.useState(false);
 	const [fonts, setFonts] = React.useState([]);

@@ -12,9 +12,10 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 
 	const formatDiagramName = useCallback((name) => {
 		let formattedName = name.replace(/\s+/g, '-');
+		// eslint-disable-next-line no-useless-escape
 		formattedName = formattedName.replace(/[,.!@#$%^&*()+=\[\]{};':"\\|<>/?~]/g, '');
 		return formattedName;
-	}, []); // formatDiagramName doesn't depend on any props or state
+	}, []);
 
 	const downloadPng = useCallback(() => {
 		const link = document.createElement('a');
@@ -24,6 +25,8 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 			link.click();
 		}
 	}, [diagramName, canvasRef, formatDiagramName]);
+
+
 
 	useEffect(() => {
 		const handleKeyDown = (event) => {
