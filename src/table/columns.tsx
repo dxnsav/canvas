@@ -44,7 +44,7 @@ export const columns: ColumnDef<Data>[] = [
 		header: ({ column }) => {
 			return (
 				<Button
-					variant="ghost"
+					variant="secondary"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
 					Точка

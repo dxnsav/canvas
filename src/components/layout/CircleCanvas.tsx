@@ -44,15 +44,15 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 	}, [downloadPng]);
 
 	return (
-		<div className='flex flex-row gap-4 items-center h-fit'>
-			<Card className={`w-[314px] min-h-[200px] flex flex-col justify-between`} style={{ height: size.height }}>
+		<div className='w-full flex flex-row gap-4 items-center h-fit'>
+			<Card className={`min-h-[200px] flex flex-col justify-between`} style={{ height: size.height }}>
 				<CardHeader>
 					<CardTitle>
 						Дякую за використання!
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<Button className='w-full' onClick={() => downloadPng()}>
+					<Button className='w-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground' onClick={() => downloadPng()}>
 						Завантажити
 						<DownloadIcon className="ml-2 h-4 w-4" />
 					</Button>
@@ -71,7 +71,7 @@ const CircleCanvas: FC<CircleCanvasProps> = () => {
 				</CardFooter>
 			</Card>
 
-			<Card className={`w-fit h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
+			<Card className={`w-full h-fit min-h-[200px] min-w-[200px] flex flex-col items-center justify-center`}>
 				<CardContent className='p-0'>
 					<canvas ref={canvasRef} width={size.width} height={size.height} className='rounded-xl' />
 				</CardContent>

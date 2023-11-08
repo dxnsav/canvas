@@ -1,6 +1,7 @@
 import { KeyboardIcon } from '@radix-ui/react-icons'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Separator } from '../ui/separator'
+import { ThemeToggle } from '../ui/ThemeToggle'
 
 const Hero = () => {
 	return (
@@ -13,17 +14,20 @@ const Hero = () => {
 					Створення точних гістограм, кругових та лінійних діаграм у Photoshop може бути складним та часозатратним завданням. Наш генератор графіків розроблений з метою полегшити та прискорити цей процес, особливо коли йдеться про візуалізацію розрізів ДНК. Він ідеально підходить для генетиків, біологів та науковців, які потребують чіткого представлення даних для аналізу, навчання чи презентацій. Просто введіть ваші дані, і дивіться, як ваші графіки оживають в лічені секунди
 				</p>
 			</div>
-			<Card className='w-[440px]'>
+			<Card className='w-[440px] bg-primary text-primary-foreground'>
 				<CardHeader>
-					<CardTitle className='flex flex-row gap-2 align-middle'>
-						<KeyboardIcon className='w-5 h-5 mr-2' />
-						Хот-кеї
+					<CardTitle className='flex w-full justify-between items-center'>
+						<div className='flex items-center gap-2'>
+							<KeyboardIcon className='w-5 h-5' />
+							Хот-кеї
+						</div>
+						<ThemeToggle />
 					</CardTitle>
 					<Separator className='mt-2' />
 				</CardHeader>
 				<CardContent className='w-full flex flex-col gap-2'>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Зберегти графік
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -31,7 +35,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Додати рядок
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -39,7 +43,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Видалити рядок
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -47,7 +51,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Перейти на наступний рядок
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -55,7 +59,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Перейти на попередній рядок
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -63,7 +67,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Перейти на наступну колонку
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
@@ -71,7 +75,7 @@ const Hero = () => {
 						</kbd>
 					</div>
 					<div className='flex flex-row gap-2 align-baseline justify-between'>
-						<CardDescription>
+						<CardDescription className='text-primary-foreground'>
 							Перейти на попередню колонку
 						</CardDescription>
 						<kbd className="w-30 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">

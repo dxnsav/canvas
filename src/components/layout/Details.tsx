@@ -142,7 +142,7 @@ export const Details = () => {
 				</div>
 			</CardContent>
 			<CardFooter>
-				<Button className="w-full" onClick={() => handleDrawClick()}>
+				<Button className="w-full bg-accent text-accent-foreground hover:bg-primary hover:text-primary-foreground" onClick={() => handleDrawClick()}>
 					Генерувати
 					<LightningBoltIcon className="ml-2 h-4 w-4 animate-swing" />
 				</Button>

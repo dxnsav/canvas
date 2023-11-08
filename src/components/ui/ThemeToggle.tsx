@@ -15,6 +15,7 @@ export const ThemeToggle = () => {
 					<Button
 						variant="ghost"
 						size="icon"
+						className='h-8 w-8'
 						onClick={() => {
 							const newTheme = theme === 'dark' ? 'light' : 'dark';
 							setTheme(newTheme);
@@ -30,7 +31,7 @@ export const ThemeToggle = () => {
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent>
-					<p>Toggle theme</p>
+					<p>Змінити тему</p>
 				</TooltipContent>
 			</Tooltip>
 		</TooltipProvider>
